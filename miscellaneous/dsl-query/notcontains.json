@@ -1,0 +1,90 @@
+{
+    "query": {
+      "bool": {
+        "must_not": {
+          "wildcard": {
+            "sql.metrics.string.stmt_batch_text": "*pr_search_getProduct*"
+          }
+        }
+      }
+    }
+}
+
+{
+  "sort" : [
+      { "sql.metrics.numeric.logicalreads" : {"order" : "asc"}}    
+  ],
+  "query" : {
+    "bool": {
+      "must_not": {
+        "wildcard": {
+          "sql.metrics.string.stmt_batch_text": "*pr_search_getProduct*"
+        }
+      }
+    }
+  }
+}
+
+{  
+  "query": {
+    "bool": {
+      "filter": {
+        "range": {
+          "sql.metrics.numeric.logicalreads": {
+            "gt": 1000000
+          }
+        }
+      },
+      "must": {
+        "script": {
+          "script": "doc.sql.metrics.string.time.date.getHourOfDay() >= min && doc.sql.metrics.string.time.date.getHourOfDay() <= max",
+          "params": {
+            "min": 5,
+            "max": 24
+          }
+        }
+      },
+      "must_not": [
+        {
+          "wildcard": {
+            "sql.metrics.string.user": "*Replicator*"
+          }
+        },
+        {
+          "wildcard": {
+            "sql.metrics.string.user": "*SQLAgent*"
+          }
+        },
+        {
+          "wildcard": {
+            "sql.metrics.string.user": "*SQLSERVERAGENT*"
+          }
+        }
+      ]
+    }
+  }
+}
+
+{
+  "query": {
+    "bool": {
+      "should": [
+        {
+          "match": {
+            "sql.metrics.string.object_name": "SQLServer:Buffer Manager"
+          }
+        },
+        {
+          "match": {
+            "sql.metrics.string.object_name": "SQLServer:SQL Statistics"
+          }
+        },
+        {
+          "wildcard": {
+            "sql.metrics.string.object_name": "SQLServer:General Statistics"
+          }
+        }
+      ]
+    }
+  }
+}
