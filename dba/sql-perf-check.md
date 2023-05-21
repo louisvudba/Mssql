@@ -60,9 +60,6 @@ ORDER BY qs.last_worker_time DESC OPTION (RECOMPILE); -- for frequently ran quer
 -- ORDER BY [Avg Worker Time in ms] DESC OPTION (RECOMPILE);-- for High CPU query
 -- ORDER BY [Avg Elapsed Time in ms] DESC OPTION (RECOMPILE);-- for Long Running query
 
-
-
-
 SELECT s.session_id
     ,r.STATUS
     ,r.blocking_session_id AS 'blocked_by'
@@ -90,7 +87,7 @@ SELECT s.session_id
      QUOTENAME(OBJECT_NAME(st.objectid, st.dbid)), '') AS 'stored_proc'
     ,qp.query_plan AS 'xml_plan'  -- uncomment (1) if you want to see plan
     ,r.command
-    ,s.login_name
+    ,s.original_login_name
     ,s.host_name
     ,s.program_name
     ,s.host_process_id
