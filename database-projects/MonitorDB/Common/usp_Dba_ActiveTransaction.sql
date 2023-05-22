@@ -43,9 +43,6 @@ BEGIN
 		OUTER APPLY (SELECT TOP 1 [sql_handle] FROM sys.sysprocesses WHERE spid = s.session_id AND [sql_handle] <> 0x0000000000000000000000000000000000000000) sp
 	WHERE s.session_id is Not Null
 		AND DATEDIFF(SECOND,a.transaction_begin_time,GETDATE()) > 60
-		AND se.[program_name] NOT LIKE 'Repl%' 
-		AND se.[program_name] NOT LIKE 'VM-KV%'
-		AND se.[program_name] NOT LIKE 'VM-DB%'		
 		AND a.[name] NOT IN ('CheckDb')
 	ORDER BY s.session_id, transaction_begin_time
 	OPTION (RECOMPILE);
